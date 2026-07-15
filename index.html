@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sadith — Application &amp; Web Developer | Miracle Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="index.html" class="logo">miracle<span>_</span>data</a>
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">$ hire --me</a>
+  </nav>
+</header>
+
+<section class="page-hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Available for freelance work</div>
+      <h1>Sadith builds <span class="accent">software that ships</span>, not slideware.</h1>
+      <p class="hero-sub">Application &amp; web developer based in Colombo, Sri Lanka. I design, build, and deploy full products — HR systems, billing platforms, tourism sites — end to end, under the Miracle Data name.</p>
+      <div class="hero-actions">
+        <a href="projects.html" class="btn-primary">View live projects</a>
+        <a href="contact.html" class="btn-ghost">Get in touch</a>
+      </div>
+      <div class="quicktags" style="margin-top:26px;">
+        <span class="tag">Firebase / Firestore</span>
+        <span class="tag">Netlify &amp; GitHub Pages</span>
+        <span class="tag">Java Swing</span>
+        <span class="tag">Accounting-literate</span>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <div class="term-title">sadith@miracle-data — zsh</div>
+      </div>
+      <div class="term-body">
+        <div class="term-line"><span class="p">$</span> whoami</div>
+        <div class="term-line out">Sadith — <span id="typed-role"></span><span class="caret"></span></div>
+        <div class="term-line" style="margin-top:16px;"><span class="p">$</span> cat location.txt</div>
+        <div class="term-line out">Colombo, Sri Lanka</div>
+        <div class="term-line" style="margin-top:16px;"><span class="p">$</span> ls background/</div>
+        <div class="term-line out">audit-traineeship/  hotel-accounts/  oak-ray-group/</div>
+        <div class="term-line" style="margin-top:16px;"><span class="p">$</span> echo $STYLE</div>
+        <div class="term-line out">build fast, iterate direct, ship the file</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat"><div class="num">4+</div><div class="label">Shipped Products</div></div>
+    <div class="stat"><div class="num">8</div><div class="label">User Roles Modeled</div></div>
+    <div class="stat"><div class="num">3</div><div class="label">Languages Supported</div></div>
+    <div class="stat"><div class="num">100%</div><div class="label">Direct Delivery</div></div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap about-grid">
+    <div>
+      <div class="section-eyebrow">Why Miracle Data</div>
+      <h2 style="margin-bottom:18px;">Finance background. Engineer's build speed.</h2>
+      <p>Before writing code for a living, I worked in accounting — audit traineeship, hotel accounts, finance at Oak Ray Group of Companies. That's why the systems I build don't just look right, they hold up under an accountant's scrutiny.</p>
+      <a href="about.html" class="project-link">Read the full story →</a>
+    </div>
+    <div>
+      <div class="section-eyebrow">What I ship</div>
+      <h2 style="margin-bottom:18px;">HR platforms, billing systems, and more.</h2>
+      <p>HR Nexus, Nexus Billing System, a Sri Lanka tourism site, and a growing list of single-file web apps deployed on Firebase, Netlify, and GitHub Pages.</p>
+      <a href="projects.html" class="project-link">See all projects →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="contact-box">
+      <h2>Have something to build?</h2>
+      <p>Tell me what you need — I'll turn it into a working file, not a proposal deck.</p>
+      <div class="contact-actions">
+        <a href="contact.html" class="btn-primary">Get in touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <p>© 2026 Sadith / Miracle Data — Colombo, Sri Lanka</p>
+    <p>Built &amp; deployed the same way I build everything: one file at a time.</p>
+  </div>
+</footer>
+
+<script>
+  const roles = ["Application & Web Developer", "Firebase / Netlify Builder", "Java Desktop Developer", "Ex-Auditor, Now Engineer"];
+  const el = document.getElementById('typed-role');
+  let ri = 0, ci = 0, deleting = false;
+
+  function tick(){
+    const word = roles[ri];
+    if(!deleting){
+      el.textContent = word.slice(0, ++ci);
+      if(ci === word.length){ deleting = true; setTimeout(tick, 1400); return; }
+    } else {
+      el.textContent = word.slice(0, --ci);
+      if(ci === 0){ deleting = false; ri = (ri+1) % roles.length; }
+    }
+    setTimeout(tick, deleting ? 40 : 65);
+  }
+  tick();
+</script>
+
+</body>
+</html>
