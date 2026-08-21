@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miracle Data — Sadith · Full-Stack Developer, Colombo</title>
+<meta name="description" content="Miracle Data — freelance full-stack development by Sadith. Single-file web apps, Firebase-backed platforms, and desktop tools shipped fast, from Colombo, Sri Lanka.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;
+    --bg-soft:#0F1830;
+    --panel:#121D36;
+    --panel-2:#16223F;
+    --line: rgba(233,237,245,0.09);
+    --line-strong: rgba(233,237,245,0.16);
+    --text:#E9EDF5;
+    --text-dim:#8B96AD;
+    --text-faint:#5C6885;
+    --gold:#D3A45E;
+    --gold-dim: rgba(211,164,94,0.14);
+    --teal:#59D6C7;
+    --teal-dim: rgba(89,214,199,0.14);
+    --danger:#E1665C;
+    --radius: 10px;
+    --maxw: 1180px;
+  }
+  [data-theme="light"]{
+    --bg:#F6F3EC;
+    --bg-soft:#EFEADD;
+    --panel:#FFFFFF;
+    --panel-2:#FBF8F1;
+    --line: rgba(23,20,10,0.10);
+    --line-strong: rgba(23,20,10,0.18);
+    --text:#191510;
+    --text-dim:#5B5546;
+    --text-faint:#8B8470;
+    --gold:#9C6B22;
+    --gold-dim: rgba(156,107,34,0.12);
+    --teal:#0E8C7C;
+    --teal-dim: rgba(14,140,124,0.12);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    transition: background .35s ease, color .35s ease;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -10%, var(--gold-dim), transparent 60%),
+      radial-gradient(ellipse 800px 500px at 100% 10%, var(--teal-dim), transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  ::selection{ background:var(--gold); color:#0B1220; }
+  :focus-visible{ outline:2px solid var(--teal); outline-offset:3px; border-radius:4px; }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; position:relative; z-index:1; }
+  section{ position:relative; z-index:1; }
+
+  /* NAV */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar{ max-width:var(--maxw); margin:0 auto; padding:16px 28px; display:flex; align-items:center; justify-content:space-between; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; letter-spacing:-0.3px; }
+  .brand .dot{ width:9px; height:9px; border-radius:50%; background:var(--gold); box-shadow:0 0 12px var(--gold); }
+  .brand span.dim{ color:var(--text-dim); font-weight:500; }
+  nav.links{ display:flex; align-items:center; gap:32px; }
+  nav.links a{ font-size:13.5px; color:var(--text-dim); font-weight:500; position:relative; padding:4px 0; transition:color .2s; }
+  nav.links a:hover, nav.links a.active{ color:var(--text); }
+  nav.links a.active::after{ content:""; position:absolute; left:0; right:0; bottom:-4px; height:2px; background:var(--gold); border-radius:2px; }
+  .nav-actions{ display:flex; align-items:center; gap:12px; }
+  .theme-toggle{
+    width:36px; height:36px; border-radius:8px; border:1px solid var(--line-strong);
+    background:var(--panel); color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:15px; transition: transform .2s, border-color .2s;
+  }
+  .theme-toggle:hover{ border-color:var(--gold); transform:translateY(-1px); }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 18px; border-radius:8px; font-size:13.5px; font-weight:600;
+    border:1px solid var(--line-strong); cursor:pointer; transition: all .2s ease; white-space:nowrap;
+  }
+  .btn-primary{ background:var(--gold); color:#14100A; border-color:var(--gold); }
+  .btn-primary:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+  .btn-ghost{ background:transparent; color:var(--text); }
+  .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
+  .hamburger{ display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:8px; }
+  .hamburger span{ width:22px; height:2px; background:var(--text); border-radius:2px; }
+
+  /* HERO */
+  .hero{ padding:168px 0 90px; }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace;
+    font-size:12px; color:var(--teal); background:var(--teal-dim); border:1px solid rgba(89,214,199,0.3);
+    padding:6px 12px; border-radius:100px; margin-bottom:22px;
+  }
+  .eyebrow .pulse{ width:6px; height:6px; border-radius:50%; background:var(--teal); animation:pulse 1.8s infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.3; } }
+  h1{
+    font-family:'JetBrains Mono',monospace; font-weight:800; letter-spacing:-1.5px;
+    font-size:clamp(34px,4.6vw,58px); line-height:1.06; margin-bottom:22px;
+  }
+  h1 .accent{ color:var(--gold); }
+  h1 .accent2{ color:var(--teal); }
+  .hero-sub{ font-size:17px; color:var(--text-dim); max-width:520px; margin-bottom:34px; }
+  .hero-cta{ display:flex; gap:14px; margin-bottom:44px; flex-wrap:wrap; }
+  .hero-meta{ display:flex; gap:26px; flex-wrap:wrap; }
+  .hero-meta div{ font-family:'JetBrains Mono',monospace; }
+  .hero-meta .n{ font-size:22px; font-weight:700; color:var(--text); }
+  .hero-meta .l{ font-size:11.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.8px; }
+
+  /* TERMINAL */
+  .terminal{
+    background:var(--panel); border:1px solid var(--line-strong); border-radius:12px;
+    overflow:hidden; box-shadow:0 24px 60px -20px rgba(0,0,0,0.5);
+  }
+  .term-bar{ display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--line); background:var(--panel-2); }
+  .term-bar .tdot{ width:11px; height:11px; border-radius:50%; }
+  .term-bar .t1{ background:#E1665C; } .term-bar .t2{ background:#E0B04E; } .term-bar .t3{ background:#5AC46A; }
+  .term-title{ margin-left:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-faint); }
+  .term-body{ padding:22px 20px; font-family:'JetBrains Mono',monospace; font-size:13px; min-height:280px; color:#B9C2D6; }
+  [data-theme="light"] .term-body{ color:#4A4636; }
+  .term-body .ln{ margin-bottom:9px; white-space:pre-wrap; word-break:break-word; }
+  .term-body .prompt{ color:var(--teal); }
+  .term-body .path{ color:var(--gold); }
+  .term-body .ok{ color:#6FCF7A; }
+  .term-body .comment{ color:var(--text-faint); }
+  .cursor{ display:inline-block; width:7px; height:14px; background:var(--gold); vertical-align:middle; animation:blink 1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* SECTION HEADERS */
+  .sec{ padding:100px 0; border-top:1px solid var(--line); }
+  .sec-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:52px; flex-wrap:wrap; }
+  .sec-num{ font-family:'JetBrains Mono',monospace; color:var(--text-faint); font-size:12.5px; letter-spacing:1px; margin-bottom:10px; }
+  .sec-title{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(24px,3vw,36px); letter-spacing:-0.8px; }
+  .sec-desc{ color:var(--text-dim); max-width:440px; font-size:14.5px; }
+
+  /* STATS */
+  .stats-bar{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--panel); }
+  .stat{ padding:28px 20px; text-align:center; border-right:1px solid var(--line); }
+  .stat:last-child{ border-right:none; }
+  .stat .num{ font-family:'JetBrains Mono',monospace; font-size:32px; font-weight:800; color:var(--gold); }
+  .stat .lbl{ font-size:12px; color:var(--text-dim); margin-top:6px; text-transform:uppercase; letter-spacing:0.6px; }
+
+  /* PROJECT FILTER */
+  .filters{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px; }
+  .filter-btn{
+    font-family:'JetBrains Mono',monospace; font-size:12px; padding:8px 14px; border-radius:100px;
+    border:1px solid var(--line-strong); background:transparent; color:var(--text-dim); cursor:pointer; transition:all .2s;
+  }
+  .filter-btn:hover{ color:var(--text); border-color:var(--gold); }
+  .filter-btn.active{ background:var(--gold); color:#14100A; border-color:var(--gold); }
+
+  .projects-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
+  .pcard{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:26px;
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .pcard:hover{ transform:translateY(-4px); border-color:var(--line-strong); box-shadow:0 20px 40px -24px rgba(0,0,0,0.5); }
+  .pcard-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .pcard h3{ font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:700; letter-spacing:-0.3px; }
+  .badge{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:4px 9px; border-radius:100px;
+    white-space:nowrap; border:1px solid; font-weight:600;
+  }
+  .badge-single{ color:var(--teal); border-color:rgba(89,214,199,0.35); background:var(--teal-dim); }
+  .badge-multi{ color:var(--gold); border-color:rgba(211,164,94,0.35); background:var(--gold-dim); }
+  .pcard p{ color:var(--text-dim); font-size:13.5px; flex-grow:1; }
+  .tags{ display:flex; flex-wrap:wrap; gap:7px; }
+  .tag{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text-faint); border:1px solid var(--line); padding:3px 8px; border-radius:5px; }
+  .pcard-links{ display:flex; gap:16px; padding-top:8px; border-top:1px solid var(--line); margin-top:4px; }
+  .pcard-links a{ font-size:12.5px; font-weight:600; color:var(--teal); display:flex; align-items:center; gap:5px; }
+  .pcard-links a:hover{ text-decoration:underline; }
+
+  /* PROCESS */
+  .process-wrap{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; align-items:start; }
+  .process-steps{ display:flex; flex-direction:column; }
+  .pstep{ display:flex; gap:20px; padding:22px 0; border-bottom:1px solid var(--line); }
+  .pstep:last-child{ border-bottom:none; }
+  .pstep .pnum{ font-family:'JetBrains Mono',monospace; color:var(--gold); font-weight:700; font-size:14px; min-width:34px; }
+  .pstep h4{ font-size:16px; margin-bottom:6px; font-weight:600; }
+  .pstep p{ color:var(--text-dim); font-size:13.5px; }
+  .process-quote{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:34px; position:sticky; top:110px;
+  }
+  .process-quote .qmark{ font-family:'JetBrains Mono',monospace; font-size:44px; color:var(--gold); line-height:1; margin-bottom:8px; }
+  .process-quote p{ font-size:19px; line-height:1.5; margin-bottom:18px; }
+  .process-quote .who{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--text-dim); }
+
+  /* STACK */
+  .stack-panel{ background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .stack-header{ padding:16px 22px; border-bottom:1px solid var(--line); font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--text-faint); background:var(--panel-2); }
+  .stack-body{ padding:24px 26px; font-family:'JetBrains Mono',monospace; font-size:13.5px; }
+  .stack-body .brace{ color:var(--text-faint); }
+  .stack-row{ padding-left:24px; }
+  .stack-cat{ color:var(--teal); margin:14px 0 8px; }
+  .stack-item{ display:flex; justify-content:space-between; padding:4px 0 4px 24px; }
+  .stack-item .k{ color:var(--gold); }
+  .stack-item .v{ color:var(--text-dim); }
+
+  /* ABOUT */
+  .about-grid{ display:grid; grid-template-columns:0.85fr 1.15fr; gap:56px; align-items:center; }
+  .about-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:30px; aspect-ratio:1/1;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .about-card .tag-lg{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-faint); }
+  .about-card .initials{ font-family:'JetBrains Mono',monospace; font-size:64px; font-weight:800; color:var(--gold); letter-spacing:-2px; }
+  .about-card .loc{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--teal); display:flex; align-items:center; gap:6px; }
+  .about-text p{ color:var(--text-dim); margin-bottom:16px; font-size:15px; }
+  .about-text strong{ color:var(--text); font-weight:600; }
+  .timeline{ margin-top:26px; display:flex; flex-direction:column; gap:0; }
+  .trow{ display:flex; gap:16px; padding:12px 0; border-top:1px solid var(--line); }
+  .trow .ty{ font-family:'JetBrains Mono',monospace; color:var(--gold); font-size:12.5px; min-width:60px; }
+  .trow .tt{ font-size:14px; font-weight:600; }
+  .trow .td{ font-size:12.5px; color:var(--text-faint); }
+
+  /* CONTACT */
+  .contact-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+  .contact-left h2{ font-family:'JetBrains Mono',monospace; font-size:clamp(28px,3.6vw,44px); letter-spacing:-1px; margin-bottom:18px; }
+  .contact-left p{ color:var(--text-dim); font-size:15px; margin-bottom:30px; max-width:420px; }
+  .contact-chips{ display:flex; flex-direction:column; gap:12px; }
+  .chip{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 18px;
+    cursor:pointer; transition:border-color .2s;
+  }
+  .chip:hover{ border-color:var(--gold); }
+  .chip .cl{ display:flex; align-items:center; gap:12px; font-size:14px; }
+  .chip .ci{ width:34px; height:34px; border-radius:8px; background:var(--gold-dim); display:flex; align-items:center; justify-content:center; font-size:15px; }
+  .chip .cv{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--text-faint); }
+  .copy-toast{
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0;
+    background:var(--gold); color:#14100A; font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700;
+    padding:10px 18px; border-radius:100px; z-index:999; transition:all .3s ease; pointer-events:none;
+  }
+  .copy-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  form.cform{ display:flex; flex-direction:column; gap:14px; }
+  .cform label{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px; display:block; }
+  .cform input, .cform textarea{
+    width:100%; background:var(--panel); border:1px solid var(--line-strong); border-radius:8px; padding:12px 14px;
+    color:var(--text); font-family:'Inter',sans-serif; font-size:14px; resize:vertical;
+  }
+  .cform input:focus, .cform textarea:focus{ border-color:var(--gold); outline:none; }
+  .cform textarea{ min-height:110px; }
+
+  footer{ border-top:1px solid var(--line); padding:36px 0; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; }
+  .foot-row p{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-faint); }
+  .foot-links{ display:flex; gap:20px; }
+  .foot-links a{ font-size:12.5px; color:var(--text-dim); }
+  .foot-links a:hover{ color:var(--gold); }
+
+  .back-top{
+    position:fixed; bottom:26px; right:26px; width:44px; height:44px; border-radius:50%;
+    background:var(--gold); color:#14100A; border:none; cursor:pointer; font-size:16px;
+    display:flex; align-items:center; justify-content:center; z-index:90; opacity:0; pointer-events:none;
+    transition: all .3s ease; box-shadow:0 12px 24px -8px rgba(0,0,0,0.4);
+  }
+  .back-top.show{ opacity:1; pointer-events:auto; }
+
+  .reveal{ opacity:0; transform:translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* PAGE ROUTING */
+  .page{ display:none; }
+  .page.active{ display:block; animation: pagein .35s ease; }
+  @keyframes pagein{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+
+  @media (max-width:920px){
+    nav.links, .nav-actions .btn-primary{ display:none; }
+    .hamburger{ display:flex; }
+    .hero-grid, .process-wrap, .about-grid, .contact-wrap{ grid-template-columns:1fr; }
+    .projects-grid{ grid-template-columns:1fr; }
+    .stats-bar{ grid-template-columns:repeat(2,1fr); }
+    .stat:nth-child(2){ border-right:none; }
+    .process-quote{ position:static; }
+    .hero{ padding-top:130px; }
+  }
+  .mobile-menu{
+    position:fixed; inset:0; background:var(--bg); z-index:200; display:flex; flex-direction:column;
+    padding:24px 28px; transform:translateX(100%); transition:transform .3s ease;
+  }
+  .mobile-menu.open{ transform:translateX(0); }
+  .mobile-menu .mm-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:40px; }
+  .mobile-menu a{ font-family:'JetBrains Mono',monospace; font-size:22px; padding:16px 0; border-bottom:1px solid var(--line); }
+  .mm-close{ background:none; border:none; color:var(--text); font-size:24px; cursor:pointer; }
+</style>
+</head>
+<body data-theme="dark">
+
+<div class="copy-toast" id="toast">Copied to clipboard</div>
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<header>
+  <div class="navbar">
+    <a href="#" class="brand"><span class="dot"></span>miracle_data<span class="dim">.dev</span></a>
+    <nav class="links" id="navLinks">
+      <a href="#work" data-nav>work</a>
+      <a href="#process" data-nav>process</a>
+      <a href="#stack" data-nav>stack</a>
+      <a href="#about" data-nav>about</a>
+      <a href="#contact" data-nav>contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
+      <a href="#contact" class="btn btn-primary">Start a project</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mm-top">
+    <span class="brand mono"><span class="dot"></span>miracle_data</span>
+    <button class="mm-close" id="mmClose">✕</button>
+  </div>
+  <a href="#work" data-nav>work</a>
+  <a href="#process" data-nav>process</a>
+  <a href="#stack" data-nav>stack</a>
+  <a href="#about" data-nav>about</a>
+  <a href="#contact" data-nav>contact</a>
+</div>
+
+<main id="top">
+<div class="page active" id="page-home">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span>AVAILABLE FOR NEW PROJECTS · COLOMBO, LK</div>
+        <h1>Full-stack ideas, <span class="accent">shipped</span> as a single <span class="accent2">deployable file.</span></h1>
+        <p class="hero-sub">I'm Sadith, the developer behind Miracle Data. I build HR platforms, billing systems, booking tools and desktop apps for real businesses — most of them shipped as one clean HTML file, live on the internet before the coffee's cold.</p>
+        <div class="hero-cta">
+          <a href="#work" class="btn btn-primary">View the work →</a>
+          <a href="#contact" class="btn btn-ghost">Get a quote</a>
+        </div>
+        <div class="hero-meta">
+          <div><div class="n">6+</div><div class="l">Apps shipped</div></div>
+          <div><div class="n">0</div><div class="l">Build steps</div></div>
+          <div><div class="n">3</div><div class="l">Languages supported</div></div>
+          <div><div class="n">100%</div><div class="l">Uptime, zero-cost hosting</div></div>
+        </div>
+      </div>
+      <div class="terminal reveal">
+        <div class="term-bar">
+          <span class="tdot t1"></span><span class="tdot t2"></span><span class="tdot t3"></span>
+          <span class="term-title">sadith@miracle-data — deploy.log</span>
+        </div>
+        <div class="term-body" id="termBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="sec" style="padding-top:0; border-top:none;">
+    <div class="wrap">
+      <div class="stats-bar reveal">
+        <div class="stat"><div class="num">HR-Nexus</div><div class="lbl">Flagship platform</div></div>
+        <div class="stat"><div class="num">8</div><div class="lbl">Role tiers built</div></div>
+        <div class="stat"><div class="num">30+</div><div class="lbl">Currencies in billing engine</div></div>
+        <div class="stat"><div class="num">₨0</div><div class="lbl">Monthly hosting cost</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-work">
+  <!-- WORK -->
+  <section class="sec" id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="sec-num">// 01 — SELECTED WORK</div>
+          <div class="sec-title">Products, not prototypes</div>
+        </div>
+        <p class="sec-desc">Every project below is live, used by real people, and maintained. Filter by what it's built with.</p>
+      </div>
+
+      <div class="filters reveal">
+        <button class="filter-btn active" data-filter="all">all</button>
+        <button class="filter-btn" data-filter="firebase">firebase</button>
+        <button class="filter-btn" data-filter="node">node/express</button>
+        <button class="filter-btn" data-filter="java">java</button>
+        <button class="filter-btn" data-filter="single">single-file</button>
+      </div>
+
+      <div class="projects-grid" id="projectsGrid">
+
+        <div class="pcard reveal" data-tags="firebase single">
+          <div class="pcard-top">
+            <h3>HR Nexus</h3>
+            <span class="badge badge-single">single-file</span>
+          </div>
+          <p>Full HR management platform with an 8-tier role system, multi-company data isolation, real-time Firestore sync, OTP password reset, and a Leaflet branch map with auto-geocoding.</p>
+          <div class="tags"><span class="tag">Firebase</span><span class="tag">Firestore</span><span class="tag">EmailJS</span><span class="tag">Leaflet.js</span></div>
+          <div class="pcard-links">
+            <a href="https://hr-nexus.netlify.app" target="_blank" rel="noopener">↗ Live site</a>
+          </div>
+        </div>
+
+        <div class="pcard reveal" data-tags="node">
+          <div class="pcard-top">
+            <h3>Nexus Billing System</h3>
+            <span class="badge badge-multi">multi-file</span>
+          </div>
+          <p>Production billing system with manufacturing/buying/selling flows, BOM tracking, barcode scanning, 30+ currencies, and a trilingual interface — English, Sinhala, Tamil.</p>
+          <div class="tags"><span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">sql.js</span><span class="tag">JWT</span></div>
+          <div class="pcard-links">
+            <a href="https://github.com/sadith007" target="_blank" rel="noopener">↗ GitHub</a>
+          </div>
+        </div>
+
+        <div class="pcard reveal" data-tags="single">
+          <div class="pcard-top">
+            <h3>Sri Lanka Tourism SPA</h3>
+            <span class="badge badge-single">single-file</span>
+          </div>
+          <p>Tourism booking experience with an instant quote builder, a 21-day island-wide package with day-by-day itineraries, and a keyword-based FAQ chatbot.</p>
+          <div class="tags"><span class="tag">HTML/JS SPA</span><span class="tag">GitHub Pages</span></div>
+          <div class="pcard-links">
+            <a href="https://sadith007.github.io/Sri-Lanka-Tourism/" target="_blank" rel="noopener">↗ Live site</a>
+          </div>
+        </div>
+
+        <div class="pcard reveal" data-tags="java">
+          <div class="pcard-top">
+            <h3>HR Nexus Desktop</h3>
+            <span class="badge badge-multi">desktop app</span>
+          </div>
+          <p>The web platform, rebuilt as a standalone Java Swing desktop app with a local JSON database — packaged as one JAR, needs nothing but a JRE.</p>
+          <div class="tags"><span class="tag">Java Swing</span><span class="tag">FlatLaf</span><span class="tag">Gson</span></div>
+          <div class="pcard-links">
+            <a href="https://github.com/sadith007" target="_blank" rel="noopener">↗ GitHub</a>
+          </div>
+        </div>
+
+        <div class="pcard reveal" data-tags="single">
+          <div class="pcard-top">
+            <h3>Yashini & Adhithya — Wedding Site</h3>
+            <span class="badge badge-single">single-file</span>
+          </div>
+          <p>A Kandyan-inspired digital invitation: envelope entry animation, gold vine borders, Sinhala kavi verse, and a live countdown — one HTML file, fully deployable.</p>
+          <div class="tags"><span class="tag">CSS animation</span><span class="tag">Vanilla JS</span></div>
+          <div class="pcard-links">
+            <a href="#contact">↗ Request a demo</a>
+          </div>
+        </div>
+
+        <div class="pcard reveal" data-tags="single">
+          <div class="pcard-top">
+            <h3>Miracle Data Portfolio</h3>
+            <span class="badge badge-multi">multi-page SPA</span>
+          </div>
+          <p>This studio's own site, structured as a six-page SPA — Home, About, Skills, Projects, Experience, Contact — with a live project status feed.</p>
+          <div class="tags"><span class="tag">GitHub Pages</span><span class="tag">Custom domain</span></div>
+          <div class="pcard-links">
+            <a href="https://miracle-data.xyz" target="_blank" rel="noopener">↗ miracle-data.xyz</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+<div class="page" id="page-process">
+  <!-- PROCESS -->
+  <section class="sec" id="process">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="sec-num">// 02 — HOW I BUILD</div>
+          <div class="sec-title">One file. Zero build step.</div>
+        </div>
+        <p class="sec-desc">The philosophy behind almost everything I ship.</p>
+      </div>
+      <div class="process-wrap">
+        <div class="process-steps reveal">
+          <div class="pstep">
+            <div class="pnum">01</div>
+            <div><h4>Scope it as one artifact</h4><p>HTML, CSS and JS live in a single file wherever it makes sense. No bundler, no node_modules to deploy — just a file you can drag onto Netlify.</p></div>
+          </div>
+          <div class="pstep">
+            <div class="pnum">02</div>
+            <div><h4>Firebase for anything that needs to sync</h4><p>Firestore's real-time listeners give multi-user apps live updates without me hand-rolling a websocket layer.</p></div>
+          </div>
+          <div class="pstep">
+            <div class="pnum">03</div>
+            <div><h4>Ship to zero-cost infrastructure</h4><p>Netlify and GitHub Pages host the result for free, with custom domains where the client needs one.</p></div>
+          </div>
+          <div class="pstep">
+            <div class="pnum">04</div>
+            <div><h4>Iterate live, in front of the client</h4><p>Because there's no build pipeline, changes go from "can you move that button" to deployed in minutes, not a sprint.</p></div>
+          </div>
+        </div>
+        <div class="process-quote reveal">
+          <div class="qmark">"</div>
+          <p>The best architecture is the one your client's business can actually run on <strong>zero infrastructure budget</strong> — and still scale to eight role tiers when it needs to.</p>
+          <div class="who">— the whole point of Miracle Data</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+<div class="page" id="page-stack">
+  <!-- STACK -->
+  <section class="sec" id="stack">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <div class="sec-num">// 03 — TOOLBOX</div>
+          <div class="sec-title">package.json, more or less</div>
+        </div>
+        <p class="sec-desc">What actually ships in production, not a skills bar.</p>
+      </div>
+      <div class="stack-panel reveal">
+        <div class="stack-header">~/miracle-data/stack.json</div>
+        <div class="stack-body">
+<span class="brace">{</span>
+<div class="stack-cat">  "frontend":</div>
+<div class="stack-item"><span class="k">"architecture"</span><span class="v">"single-file HTML/JS SPAs"</span></div>
+<div class="stack-item"><span class="k">"styling"</span><span class="v">"vanilla CSS, no framework"</span></div>
+
+<div class="stack-cat">  "backend":</div>
+<div class="stack-item"><span class="k">"runtime"</span><span class="v">"Node.js + Express"</span></div>
+<div class="stack-item"><span class="k">"database"</span><span class="v">"Firebase Firestore, sql.js"</span></div>
+<div class="stack-item"><span class="k">"auth"</span><span class="v">"JWT, EmailJS OTP flows"</span></div>
+
+<div class="stack-cat">  "desktop":</div>
+<div class="stack-item"><span class="k">"framework"</span><span class="v">"Java Swing + FlatLaf"</span></div>
+<div class="stack-item"><span class="k">"serialization"</span><span class="v">"Gson"</span></div>
+
+<div class="stack-cat">  "deploy":</div>
+<div class="stack-item"><span class="k">"hosting"</span><span class="v">"Netlify, GitHub Pages"</span></div>
+<div class="stack-item"><span class="k">"domains"</span><span class="v">"GoDaddy DNS → GitHub Pages"</span></div>
+<span class="brace">}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+<div class="page" id="page-about">
+  <!-- ABOUT -->
+  <section class="sec" id="about">
+    <div class="wrap about-grid">
+      <div class="about-card reveal">
+        <div class="tag-lg">// developer.json</div>
+        <div class="initials">SD</div>
+        <div class="loc">📍 Colombo, Sri Lanka</div>
+      </div>
+      <div class="about-text reveal">
+        <div class="sec-num">// 04 — ABOUT</div>
+        <h2 class="sec-title" style="margin-bottom:20px;">From balance sheets to backend code</h2>
+        <p>I started in <strong>accounting</strong> — an audit traineeship, hotel accounts, finance work at a hospitality group — before moving into development full-time. That background still shows: I'm the developer who actually understands EPF/ETF, VAT/NBT, and why your payroll system can't round the way a generic template does.</p>
+        <p>Today, <strong>Miracle Data</strong> is my freelance practice. I work directly with business owners in Sri Lanka and abroad, building the exact tool they need — not a template stretched to fit.</p>
+        <div class="timeline">
+          <div class="trow"><div class="ty">Now</div><div><div class="tt">Miracle Data — Founder & Developer</div><div class="td">Full-stack web, Firebase platforms, Java desktop apps</div></div></div>
+          <div class="trow"><div class="ty">Before</div><div><div class="tt">Finance & Audit — Oak Ray Group</div><div class="td">Hotel accounts, financial statements, audit traineeship</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+<div class="page" id="page-contact">
+  <!-- CONTACT -->
+  <section class="sec" id="contact">
+    <div class="wrap contact-wrap">
+      <div class="contact-left reveal">
+        <div class="sec-num">// 05 — GET IN TOUCH</div>
+        <h2>Got an idea? <br>Let's ship it.</h2>
+        <p>Tell me what your business needs — a booking tool, an internal dashboard, a billing system — and I'll tell you honestly whether it's a weekend build or a real project.</p>
+        <div class="contact-chips">
+          <div class="chip" id="chipEmail">
+            <div class="cl"><span class="ci">✉</span> Email</div>
+            <span class="cv">contact@miracle-data.xyz</span>
+          </div>
+          <a class="chip" href="https://github.com/sadith007" target="_blank" rel="noopener">
+            <div class="cl"><span class="ci">⌥</span> GitHub</div>
+            <span class="cv">sadith007</span>
+          </a>
+          <a class="chip" href="https://miracle-data.xyz" target="_blank" rel="noopener">
+            <div class="cl"><span class="ci">◈</span> Studio site</div>
+            <span class="cv">miracle-data.xyz</span>
+          </a>
+        </div>
+      </div>
+      <div class="reveal">
+        <form class="cform" id="contactForm">
+          <div>
+            <label for="cname">Name</label>
+            <input id="cname" type="text" placeholder="Your name" required>
+          </div>
+          <div>
+            <label for="cemail">Email</label>
+            <input id="cemail" type="email" placeholder="you@company.com" required>
+          </div>
+          <div>
+            <label for="cmsg">What are you building?</label>
+            <textarea id="cmsg" placeholder="Tell me about the project..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="justify-content:center; margin-top:6px;">Send message →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <p>© 2026 Miracle Data · built by Sadith, obviously as a single file</p>
+    <div class="foot-links">
+      <a href="https://github.com/sadith007" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://miracle-data.xyz" target="_blank" rel="noopener">miracle-data.xyz</a>
+      <a href="#" id="footTop">Back to top</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---------- THEME TOGGLE ----------
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+function setTheme(t){
+  body.setAttribute('data-theme', t);
+  themeToggle.textContent = t === 'dark' ? '◐' : '◑';
+  try{ localStorage.setItem('md-theme', t); }catch(e){}
+}
+let savedTheme = 'dark';
+try{ savedTheme = localStorage.getItem('md-theme') || 'dark'; }catch(e){}
+setTheme(savedTheme);
+themeToggle.addEventListener('click', ()=>{
+  setTheme(body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+// ---------- MOBILE MENU ----------
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const mmClose = document.getElementById('mmClose');
+hamburgerBtn.addEventListener('click', ()=> mobileMenu.classList.add('open'));
+mmClose.addEventListener('click', ()=> mobileMenu.classList.remove('open'));
+mobileMenu.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> mobileMenu.classList.remove('open')));
+
+// ---------- PAGE ROUTING ----------
+const navAnchors = document.querySelectorAll('a[data-nav], a[href^="#"].btn');
+const pages = document.querySelectorAll('.page');
+const validPages = ['home','work','process','stack','about','contact'];
+
+function showPage(id){
+  if(!validPages.includes(id)) id = 'home';
+  pages.forEach(p=> p.classList.toggle('active', p.id === 'page-'+id));
+  document.querySelectorAll('a[data-nav]').forEach(a=>{
+    const target = a.getAttribute('href').replace('#','') || 'home';
+    a.classList.toggle('active', target === id);
+  });
+  window.scrollTo({ top:0, behavior:'auto' });
+  // re-trigger reveal animations for the newly shown page
+  document.querySelectorAll('.page.active .reveal').forEach(el=>{
+    el.classList.remove('in');
+    requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('in')));
+  });
+}
+
+function routeFromHash(){
+  const hash = location.hash.replace('#','');
+  showPage(hash || 'home');
+}
+
+window.addEventListener('hashchange', routeFromHash);
+document.addEventListener('DOMContentLoaded', routeFromHash);
+routeFromHash();
+
+// ---------- BACK TO TOP ----------
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', ()=>{
+  backTop.classList.toggle('show', window.scrollY > 500);
+}, { passive:true });
+backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+document.getElementById('footTop').addEventListener('click', (e)=>{ e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); });
+
+// ---------- REVEAL ON SCROLL ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, { threshold:0.12 });
+revealEls.forEach(el=> io.observe(el));
+
+// ---------- TERMINAL TYPING ----------
+const termLines = [
+  {p:'sadith@miracle-data', c:'~$ ', t:'npm run build:hr-nexus', cls:''},
+  {t:'✓ compiled → 1 file · 0 dependencies bundled', cls:'ok'},
+  {p:'sadith@miracle-data', c:'~$ ', t:'firebase deploy --only hosting', cls:''},
+  {t:'✓ deployed to hr-nexus.netlify.app', cls:'ok'},
+  {t:'# building Sri Lanka Tourism SPA...', cls:'comment'},
+  {p:'sadith@miracle-data', c:'~$ ', t:'git push origin main', cls:''},
+  {t:'✓ live at sadith007.github.io/Sri-Lanka-Tourism', cls:'ok'},
+  {t:'# 8 role tiers, 30+ currencies, 1 happy client', cls:'comment'},
+];
+const termBody = document.getElementById('termBody');
+let lineIdx = 0, charIdx = 0;
+function typeLine(){
+  if(lineIdx >= termLines.length){
+    setTimeout(()=>{ termBody.innerHTML=''; lineIdx=0; charIdx=0; typeLine(); }, 2200);
+    return;
+  }
+  const line = termLines[lineIdx];
+  if(charIdx === 0){
+    const div = document.createElement('div');
+    div.className = 'ln ' + (line.cls||'');
+    if(line.p){ div.innerHTML = `<span class="prompt">${line.p}</span><span class="path">${line.c}</span><span class="typed"></span>`; }
+    else { div.innerHTML = `<span class="typed"></span>`; }
+    termBody.appendChild(div);
+  }
+  const typedSpan = termBody.lastElementChild.querySelector('.typed');
+  if(charIdx < line.t.length){
+    typedSpan.textContent += line.t[charIdx];
+    charIdx++;
+    setTimeout(typeLine, line.cls === 'comment' ? 12 : 22);
+  } else {
+    termBody.lastElementChild.querySelector('.typed').insertAdjacentHTML('afterend', '');
+    lineIdx++; charIdx = 0;
+    setTimeout(typeLine, 320);
+  }
+}
+typeLine();
+const cursorEl = document.createElement('span');
+cursorEl.className = 'cursor';
+setInterval(()=>{
+  if(termBody.lastElementChild && !termBody.lastElementChild.contains(cursorEl)){
+    termBody.lastElementChild.appendChild(cursorEl);
+  }
+}, 400);
+
+// ---------- PROJECT FILTER ----------
+const filterBtns = document.querySelectorAll('.filter-btn');
+const pcards = document.querySelectorAll('.pcard');
+filterBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    filterBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    pcards.forEach(card=>{
+      const tags = card.dataset.tags || '';
+      const show = f === 'all' || tags.includes(f);
+      card.style.display = show ? 'flex' : 'none';
+    });
+  });
+});
+
+// ---------- COPY EMAIL ----------
+const chipEmail = document.getElementById('chipEmail');
+const toast = document.getElementById('toast');
+chipEmail.addEventListener('click', ()=>{
+  const email = 'contact@miracle-data.xyz';
+  navigator.clipboard?.writeText(email).catch(()=>{});
+  toast.textContent = 'Copied: ' + email;
+  toast.classList.add('show');
+  setTimeout(()=> toast.classList.remove('show'), 2200);
+});
+
+// ---------- CONTACT FORM (mailto fallback) ----------
+document.getElementById('contactForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('cname').value;
+  const email = document.getElementById('cemail').value;
+  const msg = document.getElementById('cmsg').value;
+  const subject = encodeURIComponent('New project inquiry from ' + name);
+  const body = encodeURIComponent(msg + '\n\n— ' + name + ' (' + email + ')');
+  window.location.href = `mailto:contact@miracle-data.xyz?subject=${subject}&body=${body}`;
+  toast.textContent = 'Opening your email app…';
+  toast.classList.add('show');
+  setTimeout(()=> toast.classList.remove('show'), 2200);
+});
+</script>
+</body>
+</html>
